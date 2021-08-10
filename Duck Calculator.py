@@ -49,8 +49,6 @@ duck_calculator_sign.grid(columnspan=5, row=0,sticky="w")
 # Duck Logo
 byte_data = base64.b64decode(quack)
 image_data = BytesIO(byte_data)
-
-
 duck_photo = Image.open(image_data).resize((80, 80))
 duck_photo = ImageTk.PhotoImage(duck_photo)
 logo_label = tk.Label(image=duck_photo, bd=0)
