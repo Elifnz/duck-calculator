@@ -1,5 +1,9 @@
+import base64
 import tkinter as tk
 from PIL import Image, ImageTk
+from io import BytesIO
+from base64 import b64decode
+from pic2str import quack
 
 # Updated expression box
 expression = ""
@@ -7,6 +11,7 @@ expression = ""
 
 def update(number_entered):
     global expression
+    global equation
     expression = expression + str(number_entered)
     equation.set(expression)
 
@@ -15,6 +20,7 @@ def update(number_entered):
 def equal_button():
     try:
         global expression
+        global equation
         total = str(eval(expression))
         equation.set(total)
     except:
@@ -30,6 +36,7 @@ def clear_button():
 
 
 root = tk.Tk()
+root.title("Duck Calculator")
 backg = "#fef6da"
 canvas = tk.Canvas(root, width=400, height=600, bg=backg)
 canvas.grid(columnspan=5, rowspan=8)
@@ -37,21 +44,23 @@ equation = tk.StringVar()
 # Duck Calculator Title
 FONT = 'impact'
 duck_calculator_sign = tk.Label(root, text="Duck Calculator", font=(FONT, 25), fg="darksalmon", bd=0, bg=backg)
-duck_calculator_sign.grid(columnspan=5, row=0)
+duck_calculator_sign.grid(columnspan=5, row=0,sticky="w")
 
 # Duck Logo
-image = Image.open('duck.png')
-new_image = Image.new("RGBA", image.size, backg)  # Create a white rgba background
-new_image.paste(image, (0, 0), image)  # Paste the image on the background. Go to the links given below for details.
-new_image.convert('RGB').save('duck.jpg', "JPEG")  # Save as JPEG
-duck_photo = Image.open('duck.jpg').resize((80, 80))
+byte_data = base64.b64decode(quack)
+image_data = BytesIO(byte_data)
+
+
+duck_photo = Image.open(image_data).resize((80, 80))
 duck_photo = ImageTk.PhotoImage(duck_photo)
 logo_label = tk.Label(image=duck_photo, bd=0)
 logo_label.image = duck_photo
-logo_label.grid(columnspan=4, row=0, sticky="w")
-# EXPRESSİON BOX WHERE CALCULATİONS ARE DİSPLAYED
-expression_field = tk.Entry(root, width=45, textvariable=equation)
-expression_field.grid(columnspan=4, row=3)
+logo_label.grid(columnspan=4, row=0, sticky="e")
+
+# EXPRESSION BOX WHERE CALCULATIONS ARE DISPLAYED
+expression_field = tk.Entry(root, width=11, textvariable=equation, font=(FONT,35),bg="#e7c27d", fg="#826400")
+expression_field.grid(columnspan=6,column=1, row=3, sticky='w')
+
 # 0,1,2,3,4,5,6,7,8,9 Buttons will be written
 button0 = tk.Button(root, text="0", bg="#eedc9a", fg="white", command=lambda: update(0), height="3", width="8",
                     font=FONT)
@@ -85,7 +94,7 @@ button9 = tk.Button(root, text="9", bg="#eedc9a", fg="white", command=lambda: up
 button9.grid(row=4, column=3, sticky='nsew')
 
 # =,/,*,+,- buttons
-buttonequal = tk.Button(root, text=" = ", bg="#eedc9a", fg="white", command=equal_button(), height="3", width="8",
+buttonequal = tk.Button(root, text=" = ", bg="#eedc9a", fg="white", command=equal_button, height="3", width="8",
                         font=FONT)
 buttonequal.grid(row=7, column=3, sticky='nsew')
 buttondivide = tk.Button(root, text=" / ", bg="#eedc9a", fg="white", command=lambda: update("/"), height="3", width="8",
